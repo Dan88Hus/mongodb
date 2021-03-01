@@ -1,0 +1,58 @@
+mongodump --uri "mongodb+srv://<your username>:<your password>@<your cluster>.mongodb.net/sample_supplies"
+
+mongoexport --uri="mongodb+srv://<your username>:<your password>@<your cluster>.mongodb.net/sample_supplies" --collection=sales --out=sales.json
+
+mongorestore --uri "mongodb+srv://<your username>:<your password>@<your cluster>.mongodb.net/sample_supplies"  --drop dump
+
+mongoimport --uri="mongodb+srv://<your username>:<your password>@<your cluster>.mongodb.net/sample_supplies" --drop sales.json
+
+You will be prompted to enter the password that you just created:
+
+m001-mongodb-basics
+
+mongo "mongodb+srv://sandbox.aynld.mongodb.net/myFirstDatabase" --username m001-student
+
+mongo "mongodb+srv://<username>:<password>@<cluster>.mongodb.net/admin"
+
+
+{"$and":[{"founded_year":2004},{"$or":[{"category_code":"social"},{"category_code":"web"}]}]}
+
+db.companies.find({"$or":[{"$and":[{"founded_year":2004},{"$or":[{"category_code":"social"},{"category_code":"web"}]}]},
+		{"$and":[{"founded_month":10},{"$or":[{"category_code":"social"},{"category_code":"web"}]}]}]}).count()
+
+db.trips.find({ "$expr": { "$and": [ { "$gt": [ "$tripduration", 1200 ]},
+                         { "$eq": [ "$end station id", "$start station id" ]}
+                       ]}}).count()
+
+db.listingsAndReviews.find({ "amenities": {
+                                  "$size": 20,
+                                  "$all": [ "Internet", "Wifi",  "Kitchen",
+                                           "Heating", "Family/kid friendly",
+                                           "Washer", "Dryer", "Essentials",
+                                           "Shampoo", "Hangers",
+                                           "Hair dryer", "Iron",
+                                           "Laptop friendly workspace" ]
+                                         }
+                            }).pretty()
+
+db.listingsAndReviews.find({"$and":[{"property_type":"House"},{"amenities": {"$all":["Changing table"]}}]}).count()
+
+
+db.listingsAndReviews.find({"$and":[{"accommodates":{"$gt":6}},{"reviews":{"$size":50}}]}).pretty()
+
+db.listingsAndReviews.find({ "amenities": "Wifi" },
+                           { "price": 1, "address": 1, "_id": 0 }).pretty()
+
+
+db.grades.find({ "scores": { "$elemMatch": { "type": "extra credit" } }
+               }).pretty()
+elemMatch array[0 veya 1] gibi lerin icinde arama yapar
+
+db.listingsAndReviews.aggregate([{ "$project": { "room_type": 1, "_id": 0 }},{"$group": {"_id":"$room_type", "count": {"$sum":1}}}])
+
+db.companies.find({ "founded_year": { "$ne": null }},
+                  { "name": 1, "founded_year": 1 }
+                 ).limit(5).sort({ "founded_year": 1 })
+
+db.trips.find({"birth year": {"$gt":0}},{"birth year":1,"_id":0}).sort({"birth year":-1}).limit(15)
+
